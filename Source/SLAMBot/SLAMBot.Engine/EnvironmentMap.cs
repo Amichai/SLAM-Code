@@ -7,6 +7,10 @@ using System.Collections.ObjectModel;
 
 namespace SLAMBot.Engine {
 	///<summary>Stores a map of the robot's environment.</summary>
+	///<remarks>
+	/// This should be modified to expose IEnumerables of cells 
+	/// in whatever fashions are needed (eg, Row(int)).
+	///</remarks>
 	public class EnvironmentMap {
 		class CellCollection : KeyedCollection<Location, MapCell> {
 			protected override Location GetKeyForItem(MapCell item) { return item.Location; }
@@ -21,6 +25,8 @@ namespace SLAMBot.Engine {
 
 		readonly CellCollection cells = new CellCollection();
 
+		//We try to remove 0'd cells
+		#region Indexer
 		///<summary>Gets or sets the probability that a cell is occupied, between 0 and 1.</summary>
 		public double this[int x, int y] {
 			get { return this[new Location(x, y)]; }
@@ -45,6 +51,36 @@ namespace SLAMBot.Engine {
 				}
 			}
 		}
+		#endregion
+
+		#region Stats
+		///<summary>Gets the location of the top-left corner of the map's bounding box.</summary>
+		///<remarks>This is an O(n) operation.</remarks>
+		public Location TopLeft {
+			get {
+				int x = 0, y = 0;
+				foreach (var cell in cells) {
+					if (cell.Probability == 0) continue;
+					x = Math.Min(cell.X, x);
+					y = Math.Min(cell.Y, y);
+				}
+				return new Location(x, y);
+			}
+		}
+		///<summary>Gets the location of the bottom-right corner of the map's bounding box.</summary>
+		///<remarks>This is an O(n) operation.</remarks>
+		public Location BottomRight {
+			get {
+				int x = 0, y = 0;
+				foreach (var cell in cells) {
+					if (cell.Probability == 0) continue;
+					x = Math.Max(cell.X, x);
+					y = Math.Max(cell.Y, y);
+				}
+				return new Location(x, y);
+			}
+		}
+		#endregion
 	}
 
 	///<summary>Represents a single block in a map.</summary>
@@ -67,6 +103,10 @@ namespace SLAMBot.Engine {
 
 		///<summary>Gets the cell's location in the map.</summary>
 		public Location Location { get; private set; }
+		///<summary>Gets the cell's horizontal location in the map.</summary>
+		public int X { get { return Location.X; } }
+		///<summary>Gets the cell's vertical location in the map.</summary>
+		public int Y { get { return Location.Y; } }
 
 		///<summary>Occurs when a property value is changed.</summary>
 		public event PropertyChangedEventHandler PropertyChanged;
