@@ -16,7 +16,7 @@ namespace SLAMBot.Engine {
 
 		public Location(int x, int y) : this() { X = x; Y = y; }
 
-
+		public override string ToString() { return "(" + X + ", " + Y + ")"; }
 
 		public override bool Equals(object obj) { return obj is Location && Equals((Location)obj); }
 		public bool Equals(Location obj) { return X == obj.X && Y == obj.Y; }
