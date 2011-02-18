@@ -19,7 +19,7 @@ namespace SLAMBot.Engine {
 		public override string ToString() { return "(" + X + ", " + Y + ")"; }
 
 		public override bool Equals(object obj) { return obj is Location && Equals((Location)obj); }
-		public bool Equals(Location obj) { return X == obj.X && Y == obj.Y; }
+		public bool Equals(Location other) { return X == other.X && Y == other.Y; }
 		public override int GetHashCode() {
 			//http://stackoverflow.com/questions/371328/why-is-it-important-to-override-gethashcode-when-equals-method-is-overriden-in-c/371348#371348
 			return (13 * 7 + X.GetHashCode())
