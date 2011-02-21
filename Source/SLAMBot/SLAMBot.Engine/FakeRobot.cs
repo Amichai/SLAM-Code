@@ -109,7 +109,10 @@ namespace SLAMBot.Engine {
 					double newY = KnownY + distance * Math.Sin(TrigometricHeading);
 
 					//Check whether the new position overlaps with an occupied cell
-					var overlaps = coordinateRounders.Select(f => f(newX)).SelectMany(x => coordinateRounders.Select(f => new Location(x, f(newY))));
+					//This will contain 2 * 2 = 4 cells.  If newX or newY are ints,
+					//it will have duplicate cells (since Floor will equal Ceiling)
+					var overlaps = coordinateRounders.Select(f => f(newX))
+													 .SelectMany(x => coordinateRounders.Select(f => new Location(x, f(newY))));
 					if (overlaps.Any(p => Map[p] > MaxEmptyProbability))
 						break;	//Boom! Crash!  Stop moving immediately, then callback.
 
