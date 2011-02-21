@@ -38,7 +38,10 @@ namespace SLAMBot.Engine {
 		public void Rotate(int degrees, Action callback) {
 			if (motionAction != null)
 				throw new InvalidOperationException("Cannot do two things at once");
-			motionAction = RotationIterator(degrees, callback);
+			if (degrees == 0)
+				callback();
+			else
+				motionAction = RotationIterator(degrees, callback);
 		}
 		///<summary>Moves the robot forwards or backwards.</summary>
 		///<param name="steps">The (signed) number of units to move.</param>
@@ -46,7 +49,10 @@ namespace SLAMBot.Engine {
 		public void Move(int steps, Action callback) {
 			if (motionAction != null)
 				throw new InvalidOperationException("Cannot do two things at once");
-			motionAction = MotionIterator(steps, callback);
+			if (steps == 0)
+				callback();
+			else
+				motionAction = MotionIterator(steps, callback);
 		}
 		///<summary>Sends a SONAR ping.</summary>
 		public void SonarPing(Action<double> callback) {
@@ -61,7 +67,7 @@ namespace SLAMBot.Engine {
 		/// executing until the next yield return.
 		/// This allows the iterators to be implemented with normal control flow and
 		/// other logic, and to "pause" - to wait for the next timer loop - by writing
-		/// yeild return (anything).  Currently, the return value is unused, and might
+		/// yield return (anything).  Currently, the return value is unused, and might
 		/// as well be null.
 		/// 
 		///To support concurrent actions, change this to a List of IEnumerators, and call MoveNext() on each one in Step().</remarks>
@@ -70,16 +76,35 @@ namespace SLAMBot.Engine {
 		private IEnumerator<object> RotationIterator(int degrees, Action callback) {
 			DateTime lastTime = DateTime.Now;
 			int targetAngle = KnownHeading + degrees;
-			while (KnownHeading < targetAngle) {		//While we still need to turn a little more.
+
+			//While we haven't reached the desired angle,...
+			//If degrees is positive, TA > KH until we reach
+			//it, so targetAngle - KnownHeading > 0.
+
+			//If degrees is negative, TA < KH until we reach
+			//it, so targetAngle - KnownHeading < 0.
+
+			//If the last increment takes us a little past TA,
+			//I don't adjust it.  This mirrors the imprecision
+			//of a real robot.
+			while (Math.Sign(targetAngle - KnownHeading) == Math.Sign(degrees)) {		//While we still need to turn a little more.
 				var now = DateTime.Now;
 				var step = now - lastTime;
+				//Not enough time passed to give us a meaningful amount to move.  Wait until next tick
+				if (step < TimeSpan.Zero)
+					continue;
 
-				if (step > TimeSpan.Zero)
-					KnownHeading += Math.Min(1, (int)(step.Ticks / degreeDuration.Ticks));
+				var increment = (int)(step.Ticks / degreeDuration.Ticks);
+
+				//Not enough time passed to give us a meaningful amount to move.  Wait until next tick
+				if (Math.Abs(increment) < 1)
+					continue;
+				KnownHeading += increment;
 
 				lastTime = now;
 				yield return null;
 			}
+			//TODO: Normalize angle range
 			callback();	//The rotation finished.
 		}
 
@@ -98,27 +123,31 @@ namespace SLAMBot.Engine {
 				var now = DateTime.Now;
 				var step = now - lastTime;
 
-				if (step > TimeSpan.Zero) {
-					double distance = Math.Sign(remaining)
-									* Math.Min(Math.Abs(remaining), (double)step.Ticks / unitDuration.Ticks);	//Don't do integer division
-					if (Math.Abs(distance) < double.Epsilon)
-						continue;	//Prevent underflow.  I'm not sure if this line is necessary.
+				//Not enough time passed to give us a meaningful amount to move.  Wait until next tick
+				if (step < TimeSpan.Zero)
+					continue;
 
-					remaining -= distance;
-					double newX = KnownX + distance * Math.Cos(TrigometricHeading);
-					double newY = KnownY + distance * Math.Sin(TrigometricHeading);
+				double distance = Math.Sign(remaining)
+								* Math.Min(Math.Abs(remaining), (double)step.Ticks / unitDuration.Ticks);	//Don't do integer division
 
-					//Check whether the new position overlaps with an occupied cell
-					//This will contain 2 * 2 = 4 cells.  If newX or newY are ints,
-					//it will have duplicate cells (since Floor will equal Ceiling)
-					var overlaps = coordinateRounders.Select(f => f(newX))
-													 .SelectMany(x => coordinateRounders.Select(f => new Location(x, f(newY))));
-					if (overlaps.Any(p => Map[p] > MaxEmptyProbability))
-						break;	//Boom! Crash!  Stop moving immediately, then callback.
+				//Not enough time passed to give us a meaningful amount to move.  Wait until next tick
+				if (Math.Abs(distance) < double.Epsilon)
+					continue;	//I don't know whether this can happen, but (much) better safe than sorry.
 
-					KnownX = newX;
-					KnownY = newY;
-				}
+				remaining -= distance;
+				double newX = KnownX + distance * Math.Cos(TrigometricHeading);
+				double newY = KnownY + distance * Math.Sin(TrigometricHeading);
+
+				//Check whether the new position overlaps with an occupied cell
+				//This will contain 2 * 2 = 4 cells.  If newX or newY are ints,
+				//it will have duplicate cells (since Floor will equal Ceiling)
+				var overlaps = coordinateRounders.Select(f => f(newX))
+												 .SelectMany(x => coordinateRounders.Select(f => new Location(x, f(newY))));
+				if (overlaps.Any(p => Map[p] > MaxEmptyProbability))
+					break;	//Boom! Crash!  Stop moving immediately, then callback.
+
+				KnownX = newX;
+				KnownY = newY;
 
 				lastTime = now;
 				yield return null;
@@ -142,7 +171,7 @@ namespace SLAMBot.Engine {
 		///<remarks>This property is consistent with the expectations for trig functions.</remarks>
 		public double TrigometricHeading {
 			get { return (90 - KnownHeading) * Math.PI / 180; }
-			set { KnownHeading = (int)(90 - (value * 180.0 / Math.PI)); }
+			//set { KnownHeading = (int)(90 - (value * 180.0 / Math.PI)); }
 		}
 
 		///<summary>Gets the robot's heading in degrees, clockwise from positive Y.</summary>
