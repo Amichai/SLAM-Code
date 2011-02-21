@@ -37,27 +37,16 @@ namespace SLAMBot.UI.Controls {
 			var bounds = new Rectangle(x + 1, y + 1, CellSize - 2, CellSize - 2);
 
 			var brush = Brushes.Teal;
-			g.FillEllipse(brush, bounds);
 
+			g.RotateTransform(-robot.KnownHeading);	//We draw for straight up - a heading of zero.  However, KH is clockwise.
+			g.TranslateTransform(x, y);
+
+			g.FillEllipse(brush, 1, 1, CellSize / 2, CellSize / 2);
 			//Draw a rectangle in back of the robot
-			var angle = (Robot.KnownHeading % 360);
-			if (angle < 0) angle += 360;
-			switch ((angle) / 90) {
-				case 0:	//Up
-					g.FillRectangle(brush, x + 1, y + CellSize / 2, CellSize - 2, CellSize / 2 - 1);
-					break;
-				case 1:	//Right
-					g.FillRectangle(brush, x + 1, y + 1, CellSize / 2 - 1, CellSize - 2);
-					break;
-				case 2:	//Down
-					g.FillRectangle(brush, x + 1, y + 1, CellSize - 2, CellSize / 2 - 1);
-					break;
-				case 3:	//Left
-					g.FillRectangle(brush, x + CellSize / 2, y + 1, CellSize / 2 - 1, CellSize - 2);
-					break;
-				default:
-					throw new InvalidOperationException("Weird heading: " + Robot.KnownHeading);
-			}
+			g.FillRectangle(brush, 1, 1 + CellSize / 2, CellSize - 2, CellSize / 2 - 1);
+
+			//Draw a yellow line near the front of the circle portion
+			g.DrawLine(Pens.Yellow, CellSize / 3, CellSize / 4, 2 * CellSize / 3, CellSize / 4);
 		}
 	}
 }

@@ -59,6 +59,7 @@ namespace SLAMBot.UI.Controls {
 				DrawEmptyMessage(e);
 				return;
 			}
+			e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
 
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
 			int mapWidth = bottomRight.X - topLeft.X;
@@ -79,12 +80,15 @@ namespace SLAMBot.UI.Controls {
 				}
 			}
 
+			DrawContent(e.Graphics);
+			base.OnPaint(e);	//Raise the Paint event
 			DrawGridLines(e.Graphics);
 
 			//Draw a dot over (0, 0)
 			var originCenter = new Point(MapLocation.X - topLeft.X, MapLocation.Y - (mapHeight - topLeft.Y));
 			e.Graphics.FillEllipse(Brushes.Green, new Rectangle(originCenter, new Size(1, 1)));
 		}
+		protected virtual void DrawContent(Graphics g) { }
 
 		private void DrawGridLines(Graphics g) {
 			if (CellSize < 10) return;
