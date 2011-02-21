@@ -65,6 +65,10 @@ namespace SLAMBot.Engine {
 			}
 			callback();	//The rotation finished.
 		}
+
+		///<summary>A set of functions that round non-integer coordinates to each of the cells that might contain them.</summary>
+		///<remarks>These delegates are used with LINQ to get the four surrounding cells of (.5, .5) - 00, 01, 10, and 11.</remarks>
+		static Func<double, int>[] coordinateRounders = { d => (int)Math.Floor(d), d => (int)Math.Ceiling(d) };
 		private IEnumerator<object> MotionIterator(int steps, Action callback) {
 			//Motion is more complicated than rotation - we
 			//will not encroach upon an occupied cell.  If 
@@ -81,14 +85,23 @@ namespace SLAMBot.Engine {
 					if (distance < double.Epsilon) continue;	//Prevent underflow.  I'm not sure if this line is necessary.
 					remaining -= distance;
 
-					KnownX += distance * Math.Cos(TrigometricHeading);
-					KnownY += distance * Math.Sin(TrigometricHeading);
+					double newX = KnownX + distance * Math.Cos(TrigometricHeading);
+					double newY = KnownY + distance * Math.Sin(TrigometricHeading);
 
-					//TODO: Check for collision
+					//Check whether the new position overlaps with an occupied cell
+					var overlaps=coordinateRounders.Select(f=>f(newX)).SelectMany(x=>coordinateRounders.Select(f=>new Location( x , f(newY))));
+					if (overlaps.Any(p => Map[p] > MaxEmptyProbability))
+						break;	//Boom! Crash!  Stop moving immediately, then callback.
+
+					KnownX = newX;
+					KnownY = newY;
 				}
+
 				lastTime = now;
 				yield return null;
 			}
+
+			callback();
 		}
 
 		///<summary>Runs a single step of the robot's simulation.  This method should be called repeatedly.</summary>
