@@ -44,8 +44,12 @@
   <ItemGroup>
     <Compile Include="EnvironmentMap.cs" />
     <Compile Include="FakeRobot.cs" />
+    <Compile Include="Navigation\INavigationAction.cs" />
+    <Compile Include="Navigation\INavigator.cs" />
     <Compile Include="IRobot.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="Navigation\RandomWalker.cs" />
+    <Compile Include="Navigation\RobotActions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
