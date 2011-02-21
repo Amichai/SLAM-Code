@@ -8,7 +8,7 @@ namespace SLAMBot.Engine {
 	///<remarks>These methods should execute asynchronously and call a callback parameter when they finish.</remarks>
 	public interface IRobot {
 		///<summary>Rotates the robot in place.</summary>
-		///<param name="degrees">The number of degrees to rotate by.  Currently restricted to +-90.</param>
+		///<param name="degrees">The number of degrees to rotate by.  Currently restricted to multiples of 90 degrees.</param>
 		///<param name="callback">A callback to call when the rotation completes.</param>
 		void Rotate(int degrees, Action callback);
 		///<summary>Moves the robot forwards or backwards.</summary>

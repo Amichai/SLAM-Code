@@ -10,8 +10,8 @@ namespace SLAMBot.Engine.Navigation {
 
 		public IEnumerator<INavigationAction> Execute(IRobot robot) {
 			while (true) {
-				yield return new TurnAction(90 * (1 - rand.Next(2)));
-				yield return new MotionAction(rand.Next(10));
+				yield return new TurnAction(90 * rand.Next(4));
+				yield return new MotionAction(15 - rand.Next(30));
 			}
 		}
 	}
