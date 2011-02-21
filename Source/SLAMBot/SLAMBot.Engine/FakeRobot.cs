@@ -53,7 +53,7 @@ namespace SLAMBot.Engine {
 		private IEnumerator<object> RotationIterator(int degrees, Action callback) {
 			DateTime lastTime = DateTime.Now;
 			int targetAngle = KnownHeading + degrees;
-			while (KnownHeading < targetAngle) {
+			while (KnownHeading < targetAngle) {		//While we still need to turn a little more.
 				var now = DateTime.Now;
 				var step = now - lastTime;
 
@@ -63,16 +63,28 @@ namespace SLAMBot.Engine {
 				lastTime = now;
 				yield return null;
 			}
+			callback();	//The rotation finished.
 		}
 		private IEnumerator<object> MotionIterator(int steps, Action callback) {
-			//TODO: Trigonometric interpolation
+			//Motion is more complicated than rotation - we
+			//will not encroach upon an occupied cell.  If 
+			//we hit one, we'll stop early.
+
+			double remaining = steps;
 			DateTime lastTime = DateTime.Now;
-			while (true) {
+			while (remaining > double.Epsilon) {	//While we still have somewhere to go...
 				var now = DateTime.Now;
 				var step = now - lastTime;
 
 				if (step > TimeSpan.Zero) {
-					//TODO: Move in the KnownHeading direction by (step.Ticks / unitDuration.Ticks)
+					double distance = Math.Min(remaining, (double)step.Ticks / unitDuration.Ticks);	//Don't do integer division
+					if (distance < double.Epsilon) continue;	//Prevent underflow.  I'm not sure if this line is necessary.
+					remaining -= distance;
+
+					KnownX += distance * Math.Cos(TrigometricHeading);
+					KnownY += distance * Math.Sin(TrigometricHeading);
+
+					//TODO: Check for collision
 				}
 				lastTime = now;
 				yield return null;
@@ -86,6 +98,9 @@ namespace SLAMBot.Engine {
 				motionAction = null;
 			}
 		}
+
+		///<summary>Gets the robot's heading in radians, clockwise from positive X.</summary>
+		double TrigometricHeading { get { return (90 - KnownHeading) * Math.PI / 180; } }
 
 		///<summary>Gets the robot's heading in degrees, counterclockwise from positive Y.</summary>
 		public int KnownHeading { get; private set; }
