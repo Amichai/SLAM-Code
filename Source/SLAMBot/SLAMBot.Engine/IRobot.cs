@@ -19,7 +19,7 @@ namespace SLAMBot.Engine {
 		///<summary>Sends a SONAR ping.</summary>
 		void SonarPing(Action<double> callback);
 
-		///<summary>Gets the robot's heading in degrees, counterclockwise from positive Y.</summary>
+		///<summary>Gets the robot's heading in degrees, clockwise from positive Y.</summary>
 		int KnownHeading { get; }
 		///<summary>Gets the robot's approximate X coordinate.</summary>
 		double KnownX { get; }

@@ -99,10 +99,13 @@ namespace SLAMBot.Engine {
 			}
 		}
 
-		///<summary>Gets the robot's heading in radians, clockwise from positive X.</summary>
-		double TrigometricHeading { get { return (90 - KnownHeading) * Math.PI / 180; } }
+		///<summary>Gets the robot's heading in radians, counterclockwise from positive X.</summary>
+		public double TrigometricHeading {
+			get { return (90 - KnownHeading) * Math.PI / 180; }
+			set { KnownHeading = (int)(90 - (value * 180.0 / Math.PI)); }
+		}
 
-		///<summary>Gets the robot's heading in degrees, counterclockwise from positive Y.</summary>
+		///<summary>Gets the robot's heading in degrees, clockwise from positive Y.</summary>
 		public int KnownHeading { get; private set; }
 		///<summary>Gets the robot's X coordinate.</summary>
 		public double KnownX { get; private set; }
