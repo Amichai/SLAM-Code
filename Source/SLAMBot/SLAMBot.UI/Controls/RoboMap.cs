@@ -18,15 +18,15 @@ namespace SLAMBot.UI.Controls {
 			set { robot = value; Invalidate(); }
 		}
 
-		protected override void OnPaint(PaintEventArgs e) {
-			base.OnPaint(e);
+		protected override void DrawContent(Graphics g) {
+			base.DrawContent(g);
 
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
 			int mapWidth = bottomRight.X - topLeft.X;
 			int mapHeight = bottomRight.Y - topLeft.Y;
 
 			if (Robot != null) {
-				DrawRobot(e.Graphics,
+				DrawRobot(g,
 					(int)(MapLocation.X + (robot.KnownX - topLeft.X) * CellSize),
 					(int)(MapLocation.Y + (mapHeight - robot.KnownY - topLeft.Y) * CellSize)	//Our Y axis is upside-down
 				);
