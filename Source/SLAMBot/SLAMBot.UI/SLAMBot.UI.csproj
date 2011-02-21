@@ -52,9 +52,23 @@
     <Compile Include="Controls\RoboMap.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\FakeRobotHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FakeRobotHost.Designer.cs">
+      <DependentUpon>FakeRobotHost.cs</DependentUpon>
+    </Compile>
     <Compile Include="MapUtilities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleMaps.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SampleMaps.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Forms\FakeRobotHost.resx">
+      <DependentUpon>FakeRobotHost.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -64,6 +78,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SampleMaps.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SampleMaps.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -79,6 +97,9 @@
       <Project>{44155233-4511-4D40-91FD-8F4AB82F4641}</Project>
       <Name>SLAMBot.Engine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SmallEmpty.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

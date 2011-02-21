@@ -12,7 +12,7 @@ namespace SLAMBot.UI {
 		static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run();
+			Application.Run(new Forms.FakeRobotHost(MapUtilities.FromBitmap(SampleMaps.SmallEmpty)));
 		}
 	}
 }
