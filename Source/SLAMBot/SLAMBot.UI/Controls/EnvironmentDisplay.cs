@@ -33,7 +33,7 @@ namespace SLAMBot.UI.Controls {
 		///<summary>Gets the size of a single cell on the control.</summary>
 		protected int CellSize { get; private set; }
 		///<summary>Gets the location on the control to draw the top left corner of the map.</summary>
-		protected Point MapOrigin { get; private set; }
+		protected Point MapLocation { get; private set; }
 
 		protected override void OnLayout(LayoutEventArgs levent) {
 			base.OnLayout(levent);
@@ -48,7 +48,7 @@ namespace SLAMBot.UI.Controls {
 			CellSize = Math.Min(ClientSize.Width / mapWidth, ClientSize.Height / mapHeight);
 
 			//Get the location in the control to draw the (centered) map.
-			MapOrigin = new Point(
+			MapLocation = new Point(
 				(ClientSize.Width - mapWidth * CellSize) / 2,
 				(ClientSize.Height - mapHeight * CellSize) / 2
 			);
@@ -68,19 +68,22 @@ namespace SLAMBot.UI.Controls {
 			for (int x = 0; x < mapWidth; x++) {
 				for (int y = 0; y < mapHeight; y++) {
 					Rectangle cell = new Rectangle(
-						MapOrigin.X + x * CellSize,
-						MapOrigin.Y + y *CellSize,	
+						MapLocation.X + x * CellSize,
+						MapLocation.Y + y * CellSize,
 						CellSize, CellSize
 					);
 
-					int c = (int)(255 * map[topLeft.X+ x,topLeft.Y+ mapHeight-y]);	//Our Y axis is upside-down
+					int c = (int)(255 * map[topLeft.X + x, topLeft.Y + mapHeight - y]);	//Our Y axis is upside-down
 					using (var brush = new SolidBrush(Color.FromArgb(c, c, c)))
 						e.Graphics.FillRectangle(brush, cell);
 				}
 			}
 
 			DrawGridLines(e.Graphics);
-			var originCenter = MapOrigin.X
+
+			//Draw a dot over (0, 0)
+			var originCenter = new Point(MapLocation.X - topLeft.X, MapLocation.Y - (mapHeight - topLeft.Y));
+			e.Graphics.FillEllipse(Brushes.Green, new Rectangle(originCenter, new Size(1, 1)));
 		}
 
 		private void DrawGridLines(Graphics g) {
@@ -90,17 +93,17 @@ namespace SLAMBot.UI.Controls {
 			int mapHeight = bottomRight.Y - topLeft.Y;
 
 			for (int x = 0; x <= mapWidth; x++) {
-				var lineX = MapOrigin.X + x * CellSize;
+				var lineX = MapLocation.X + x * CellSize;
 				g.DrawLine(Pens.DarkGray,
-					lineX, MapOrigin.Y,
-					lineX, MapOrigin.Y + mapHeight * CellSize
+					lineX, MapLocation.Y,
+					lineX, MapLocation.Y + mapHeight * CellSize
 				);
 			}
 			for (int y = 0; y <= mapHeight; y++) {
-				var lineY = MapOrigin.Y + y * CellSize;
+				var lineY = MapLocation.Y + y * CellSize;
 				g.DrawLine(Pens.DarkGray,
-					MapOrigin.X, lineY,
-					MapOrigin.X + mapWidth * CellSize, lineY
+					MapLocation.X, lineY,
+					MapLocation.X + mapWidth * CellSize, lineY
 				);
 			}
 		}
