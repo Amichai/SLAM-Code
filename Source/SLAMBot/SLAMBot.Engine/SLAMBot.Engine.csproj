@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnvironmentMap.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="FakeRobot.cs" />
     <Compile Include="Navigation\INavigationAction.cs" />
     <Compile Include="Navigation\INavigator.cs" />
