@@ -69,17 +69,18 @@ namespace SLAMBot.UI.Controls {
 				for (int y = 0; y < mapHeight; y++) {
 					Rectangle cell = new Rectangle(
 						MapOrigin.X + x * CellSize,
-						MapOrigin.Y + (mapHeight - y) * CellSize,	//Our Y axis is upside-down
+						MapOrigin.Y + y *CellSize,	
 						CellSize, CellSize
 					);
 
-					int c = (int)(255 * map[x, y]);
+					int c = (int)(255 * map[topLeft.X+ x,topLeft.Y+ mapHeight-y]);	//Our Y axis is upside-down
 					using (var brush = new SolidBrush(Color.FromArgb(c, c, c)))
 						e.Graphics.FillRectangle(brush, cell);
 				}
 			}
 
 			DrawGridLines(e.Graphics);
+			var originCenter = MapOrigin.X
 		}
 
 		private void DrawGridLines(Graphics g) {

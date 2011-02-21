@@ -27,8 +27,8 @@ namespace SLAMBot.UI.Controls {
 
 			if (Robot != null) {
 				DrawRobot(e.Graphics,
-					(int)(MapOrigin.X + robot.KnownX * CellSize),
-					(int)(MapOrigin.Y + (mapHeight - robot.KnownY) * CellSize)	//Our Y axis is upside-down
+					(int)(MapOrigin.X + (robot.KnownX - topLeft.X) * CellSize),
+					(int)(MapOrigin.Y + (mapHeight - robot.KnownY - topLeft.Y) * CellSize)	//Our Y axis is upside-down
 				);
 			}
 		}
