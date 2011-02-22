@@ -15,6 +15,17 @@ namespace SLAMBot.UI.Forms {
 
 			mapDisplay.Map = map;
 			mapDisplay.Robot = Robot = new FakeRobot(map);
+
+			for (int x = mapDisplay.TopLeft.X; x < mapDisplay.BottomRight.X; x++) {
+				for (int y = mapDisplay.TopLeft.Y; y < mapDisplay.BottomRight.Y; y++) {
+					if (map[x, y] == 0) {
+						Robot.Teleport(new Location(x, y));
+						goto found;
+					}
+				}
+			}
+
+		found: Robot.Navigate(new Engine.Navigation.RandomWalker());
 		}
 
 		public FakeRobot Robot { get; private set; }
