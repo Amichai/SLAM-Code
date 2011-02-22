@@ -34,7 +34,7 @@
 			this.label.AutoSize = true;
 			this.label.BackColor = System.Drawing.Color.White;
 			this.label.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.label.Location = new System.Drawing.Point(0, 247);
+			this.label.Location = new System.Drawing.Point(0, 642);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(35, 13);
 			this.label.TabIndex = 1;
@@ -50,7 +50,7 @@
 			this.mapDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mapDisplay.Location = new System.Drawing.Point(0, 0);
 			this.mapDisplay.Name = "mapDisplay";
-			this.mapDisplay.Size = new System.Drawing.Size(282, 260);
+			this.mapDisplay.Size = new System.Drawing.Size(831, 655);
 			this.mapDisplay.TabIndex = 3;
 			this.mapDisplay.Text = "roboMap1";
 			// 
@@ -58,7 +58,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(282, 260);
+			this.ClientSize = new System.Drawing.Size(831, 655);
 			this.Controls.Add(this.label);
 			this.Controls.Add(this.mapDisplay);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
