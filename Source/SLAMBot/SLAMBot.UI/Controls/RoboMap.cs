@@ -28,7 +28,6 @@ namespace SLAMBot.UI.Controls {
 
 		void DrawRobot(Graphics g, Point loc) {
 			var brush = Brushes.Teal;
-			g.SmoothingMode = SmoothingMode.AntiAlias;
 			g.TranslateTransform(loc.X, loc.Y);
 			g.RotateTransform(robot.KnownHeading);		//We draw for straight up - a heading of zero.
 

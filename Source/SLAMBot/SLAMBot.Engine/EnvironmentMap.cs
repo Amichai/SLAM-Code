@@ -58,11 +58,11 @@ namespace SLAMBot.Engine {
 		///<remarks>This is an O(n) operation.</remarks>
 		public Location TopLeft {
 			get {
-				int x = 0, y = 0;
+				int x = int.MaxValue, y = int.MinValue;
 				foreach (var cell in cells) {
 					if (cell.Probability == 0) continue;
 					x = Math.Min(cell.X, x);
-					y = Math.Min(cell.Y, y);
+					y = Math.Max(cell.Y, y);
 				}
 				return new Location(x, y);
 			}
@@ -71,11 +71,11 @@ namespace SLAMBot.Engine {
 		///<remarks>This is an O(n) operation.</remarks>
 		public Location BottomRight {
 			get {
-				int x = 0, y = 0;
+				int x = int.MinValue, y = int.MaxValue;
 				foreach (var cell in cells) {
 					if (cell.Probability == 0) continue;
 					x = Math.Max(cell.X, x);
-					y = Math.Max(cell.Y, y);
+					y = Math.Min(cell.Y, y);
 				}
 				return new Location(x, y);
 			}

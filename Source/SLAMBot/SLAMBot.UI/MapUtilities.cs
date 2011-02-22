@@ -13,10 +13,12 @@ namespace SLAMBot.UI {
 
 			for (int x = 0; x < image.Width; x++) {
 				for (int y = 0; y < image.Height; y++) {
-					int mapY = image.Height - y - 1;	//In Bitmaps, Y goes downward; in the map, it goes upward
+					int mapX = x - image.Width / 2;
+					int mapY = image.Height / 2 - y;	//In Bitmaps, Y goes downward; in the map, it goes upward
+
 					var color = image.GetPixel(x, y);
 					var brightness = color.GetBrightness();
-					retVal[x, mapY] = 1 - brightness;
+					retVal[mapX, mapY] = 1 - brightness;
 				}
 			}
 

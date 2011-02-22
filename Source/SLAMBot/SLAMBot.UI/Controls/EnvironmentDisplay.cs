@@ -50,7 +50,7 @@ namespace SLAMBot.UI.Controls {
 		///<summary>Gets the width in cells of the map's bounding box.</summary>
 		protected int MapWidth { get { return BottomRight.X - TopLeft.X + 1; } }
 		///<summary>Gets the height in cells of the map's bounding box.</summary>
-		protected int MapHeight { get { return BottomRight.Y - TopLeft.Y + 1; } }
+		protected int MapHeight { get { return TopLeft.Y - BottomRight.Y + 1; } }
 
 		void RecalcLayout() {
 			if (Map == null)
@@ -71,27 +71,24 @@ namespace SLAMBot.UI.Controls {
 		///<summary>Gets the point at the upper left corner of the given map location (between TopLeft and BottomRight).</summary>
 		public Point GetPoint(double x, double y) {
 			return new Point(
-				(int)(MapLocation.X + x * CellLength),
-				(int)(MapLocation.Y + (MapHeight - y) * CellLength)		//Our Y axis is upside-down
+				(int)(MapLocation.X + (x - TopLeft.X) * CellLength),
+				(int)(MapLocation.Y + (TopLeft.Y - y) * CellLength)		//Our Y axis is upside-down
 			);
-		}
-		///<summary>Gets the point at the upper left corner of the given row/column numbers (between 0 and MapWidth/Height).</summary>
-		public Point GetPointFromIndex(double x, double y) {
-			return GetPoint(TopLeft.X + x, TopLeft.Y + y);
 		}
 		#endregion
 
 		protected override void OnPaint(PaintEventArgs e) {
+			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			if (Map == null) {
 				DrawEmptyMessage(e);
 				return;
 			}
 			e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
 
-			for (int x = TopLeft.X; x < BottomRight.X; x++) {
-				for (int y = TopLeft.Y; y < BottomRight.Y; y++) {
+			for (int x = TopLeft.X; x <= BottomRight.X; x++) {
+				for (int y = BottomRight.Y; y <= TopLeft.Y; y++) {
 
-					int c = (int)(255 * map[x, y]);
+					int c = 255 - (int)(255 * map[x, y]);
 					using (var brush = new SolidBrush(Color.FromArgb(c, c, c)))
 						e.Graphics.FillRectangle(brush, new Rectangle(GetPoint(x, y), CellSize));
 				}
@@ -102,7 +99,9 @@ namespace SLAMBot.UI.Controls {
 			DrawGridLines(e.Graphics);
 
 			//Draw a dot over (0, 0)
-			e.Graphics.FillEllipse(Brushes.Green, new Rectangle(GetPoint(0, 0), new Size(1, 1)));
+			var origin = GetPoint(0, 0);
+			origin.Offset(-2, -2);
+			e.Graphics.FillEllipse(Brushes.Red, new Rectangle(origin, new Size(4, 4)));
 		}
 		protected virtual void DrawContent(Graphics g) { }
 
