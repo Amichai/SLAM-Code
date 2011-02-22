@@ -28,8 +28,9 @@ namespace SLAMBot.UI.Controls {
 
 		void DrawRobot(Graphics g, Point loc) {
 			var brush = Brushes.Teal;
-			g.TranslateTransform(loc.X, loc.Y);
+			g.TranslateTransform(loc.X + CellLength / 2, loc.Y + CellLength / 2);
 			g.RotateTransform(robot.KnownHeading);		//We draw for straight up - a heading of zero.
+			g.TranslateTransform(-CellLength / 2, -CellLength / 2);
 
 			g.FillEllipse(brush, 1, 1, CellLength - 2, CellLength - 2);
 			//Draw a rectangle in back of the robot
