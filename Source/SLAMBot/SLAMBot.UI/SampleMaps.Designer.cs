@@ -66,5 +66,12 @@ namespace SLAMBot.UI {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap SmallObstacle {
+            get {
+                object obj = ResourceManager.GetObject("SmallObstacle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
