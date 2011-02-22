@@ -22,8 +22,8 @@ namespace SLAMBot.UI.Controls {
 			base.DrawContent(g);
 
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
-			int mapWidth = bottomRight.X - topLeft.X;
-			int mapHeight = bottomRight.Y - topLeft.Y;
+			int mapWidth = bottomRight.X - topLeft.X + 1;
+			int mapHeight = bottomRight.Y - topLeft.Y + 1;
 
 			if (Robot != null) {
 				DrawRobot(g,
@@ -41,7 +41,7 @@ namespace SLAMBot.UI.Controls {
 			g.RotateTransform(-robot.KnownHeading);	//We draw for straight up - a heading of zero.  However, KH is clockwise.
 			g.TranslateTransform(x, y);
 
-			g.FillEllipse(brush, 1, 1, CellSize / 2, CellSize / 2);
+			g.FillEllipse(brush, 1, 1, CellSize - 2, CellSize - 2);
 			//Draw a rectangle in back of the robot
 			g.FillRectangle(brush, 1, 1 + CellSize / 2, CellSize - 2, CellSize / 2 - 1);
 

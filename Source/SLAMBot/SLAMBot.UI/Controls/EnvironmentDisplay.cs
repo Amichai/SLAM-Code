@@ -41,8 +41,8 @@ namespace SLAMBot.UI.Controls {
 			if (Map == null)
 				return;
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
-			int mapWidth = bottomRight.X - topLeft.X;
-			int mapHeight = bottomRight.Y - topLeft.Y;
+			int mapWidth = bottomRight.X - topLeft.X + 1;
+			int mapHeight = bottomRight.Y - topLeft.Y + 1;
 
 			//The size of each cell in pixels
 			CellSize = Math.Min(ClientSize.Width / mapWidth, ClientSize.Height / mapHeight);
@@ -62,8 +62,8 @@ namespace SLAMBot.UI.Controls {
 			e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
 
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
-			int mapWidth = bottomRight.X - topLeft.X;
-			int mapHeight = bottomRight.Y - topLeft.Y;
+			int mapWidth = bottomRight.X - topLeft.X+1;
+			int mapHeight = bottomRight.Y - topLeft.Y+1;
 
 
 			for (int x = 0; x < mapWidth; x++) {
@@ -93,8 +93,8 @@ namespace SLAMBot.UI.Controls {
 		private void DrawGridLines(Graphics g) {
 			if (CellSize < 10) return;
 			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
-			int mapWidth = bottomRight.X - topLeft.X;
-			int mapHeight = bottomRight.Y - topLeft.Y;
+			int mapWidth = bottomRight.X - topLeft.X + 1;
+			int mapHeight = bottomRight.Y - topLeft.Y + 1;
 
 			for (int x = 0; x <= mapWidth; x++) {
 				var lineX = MapLocation.X + x * CellSize;

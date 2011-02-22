@@ -32,7 +32,7 @@
 			// label
 			// 
 			this.label.AutoSize = true;
-			this.label.BackColor = System.Drawing.Color.Transparent;
+			this.label.BackColor = System.Drawing.Color.White;
 			this.label.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.label.Location = new System.Drawing.Point(0, 247);
 			this.label.Name = "label";
