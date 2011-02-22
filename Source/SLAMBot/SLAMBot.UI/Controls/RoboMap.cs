@@ -6,6 +6,7 @@ using System.ComponentModel;
 using SLAMBot.Engine;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace SLAMBot.UI.Controls {
 	class RoboMap : EnvironmentDisplay {
@@ -21,32 +22,24 @@ namespace SLAMBot.UI.Controls {
 		protected override void DrawContent(Graphics g) {
 			base.DrawContent(g);
 
-			Location topLeft = Map.TopLeft, bottomRight = Map.BottomRight;
-			int mapWidth = bottomRight.X - topLeft.X + 1;
-			int mapHeight = bottomRight.Y - topLeft.Y + 1;
-
-			if (Robot != null) {
-				DrawRobot(g,
-					(int)(MapLocation.X + (robot.KnownX - topLeft.X) * CellSize),
-					(int)(MapLocation.Y + (mapHeight - robot.KnownY - topLeft.Y) * CellSize)	//Our Y axis is upside-down
-				);
-			}
+			if (Robot != null)
+				DrawRobot(g, GetPoint(robot.KnownX, robot.KnownY));
 		}
 
-		void DrawRobot(Graphics g, int x, int y) {
-			var bounds = new Rectangle(x + 1, y + 1, CellSize - 2, CellSize - 2);
-
+		void DrawRobot(Graphics g, Point loc) {
 			var brush = Brushes.Teal;
+			g.SmoothingMode = SmoothingMode.AntiAlias;
+			g.RotateTransform(-robot.KnownHeading);		//We draw for straight up - a heading of zero.  However, KH is clockwise.
+			g.TranslateTransform(loc.X, loc.Y);
 
-			g.RotateTransform(-robot.KnownHeading);	//We draw for straight up - a heading of zero.  However, KH is clockwise.
-			g.TranslateTransform(x, y);
-
-			g.FillEllipse(brush, 1, 1, CellSize - 2, CellSize - 2);
+			g.FillEllipse(brush, 1, 1, CellLength - 2, CellLength - 2);
 			//Draw a rectangle in back of the robot
-			g.FillRectangle(brush, 1, 1 + CellSize / 2, CellSize - 2, CellSize / 2 - 1);
+			g.FillRectangle(brush, 1, 1 + CellLength / 2, CellLength - 2, CellLength / 2 - 1);
 
 			//Draw a yellow line near the front of the circle portion
-			g.DrawLine(Pens.Yellow, CellSize / 3, CellSize / 4, 2 * CellSize / 3, CellSize / 4);
+			g.DrawLine(Pens.Yellow, CellLength / 3, CellLength / 4, 2 * CellLength / 3, CellLength / 4);
+
+			g.ResetTransform();
 		}
 	}
 }
